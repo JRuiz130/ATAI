@@ -136,7 +136,8 @@ public class MarsEnv extends Environment {
 
         void nextSlot() throws Exception {
             Location r1 = getAgPos(0);
-            r1.x++;
+            /*
+			r1.x++;
             if (r1.x == getWidth()) {
                 r1.x = 0;
                 r1.y++;
@@ -145,6 +146,19 @@ public class MarsEnv extends Environment {
             if (r1.y == getHeight()) {
                 return;
             }
+			*/
+			r1.y++;
+            if (r1.y == getHeight()) {
+                r1.y = 0;
+                r1.x++;
+            }
+            // finished searching the whole grid
+            if (r1.x == getWidth()) {
+                //for continuosly searching
+				setAgPos(0, 0, 0);
+				return;
+            }
+			
             setAgPos(0, r1);
             setAgPos(1, getAgPos(1)); // just to draw it in the view
         }
