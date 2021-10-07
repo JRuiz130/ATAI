@@ -104,21 +104,34 @@ public class MarsEnv extends Environment {
                 //setAgPos(0, 0, 0); //default pos
 
                 int x, y;
-
-                setAgPos(rand.nextInt(5)+1, rand.nextInt(5)+1, 0);
-
-                Location r2Loc = new Location(GSize/2, GSize/2);
-                setAgPos(1, r2Loc);
+				x = rand.nextInt(6);
+				y = rand.nextInt(6);
+				Location r1Loc = new Location(x, y);
+				setAgPos(0, r1Loc);
+				
+                //Location r2Loc = new Location(GSize/2, GSize/2); //Default pos
+				x = rand.nextInt(6);
+				y = rand.nextInt(6);
+				Location r2Loc = new Location(x, y);
+				setAgPos(1, r2Loc);
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
             // initial location of garbage
-            add(GARB, 3, 0);
+            /*
+			add(GARB, 3, 0);
             add(GARB, GSize-1, 0);
             add(GARB, 1, 2);
             add(GARB, 0, GSize-2);
             add(GARB, GSize-1, GSize-1);
+			*/
+			int x, y;
+			for(int i = 0; i <= 3; i++){
+				x = rand.nextInt(6);
+				y = rand.nextInt(6);
+				add(GARB, x, y);
+			}
         }
 
         void nextSlot() throws Exception {
@@ -160,6 +173,7 @@ public class MarsEnv extends Environment {
                     nerr = 0;
                     r1HasGarb = true;
                 } else {
+					System.out.println("I failed picking the garbage!");
                     nerr++;
                 }
             }

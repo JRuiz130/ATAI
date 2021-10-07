@@ -172,7 +172,9 @@ public class MarsEnv extends Environment {
                     remove(GARB, getAgPos(0));
                     nerr = 0;
                     r1HasGarb = true;
+					System.out.println("I succesfully picked up the garbage!");
                 } else {
+					System.out.println("I failed picking the garbage!");
                     nerr++;
                 }
             }
@@ -186,8 +188,19 @@ public class MarsEnv extends Environment {
         void burnGarb() {
             // r2 location has garbage
             if (model.hasObject(GARB, getAgPos(1))) {
-                remove(GARB, getAgPos(1));
+                //remove(GARB, getAgPos(1));
+				System.out.println("Trying to burn the garbage");
+				
+				if (random.nextBoolean() || nerr == MErr) {
+					System.out.println("Succesfully burnt the garbage");
+                    remove(GARB, getAgPos(1));
+                    nerr = 0;
+                } else {
+					System.out.println("I failed burning the garbage!");
+                    nerr++;
+                }
             }
+			
         }
     }
 
