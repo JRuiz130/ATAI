@@ -73,18 +73,25 @@ public class MarsEnv extends Environment {
 
         Location r1Loc = model.getAgPos(0);
         Location r2Loc = model.getAgPos(1);
+		Location r3Loc = model.getAgPos(2);
 
         Literal pos1 = Literal.parseLiteral("pos(r1," + r1Loc.x + "," + r1Loc.y + ")");
         Literal pos2 = Literal.parseLiteral("pos(r2," + r2Loc.x + "," + r2Loc.y + ")");
+        Literal pos3 = Literal.parseLiteral("pos(r3," + r3Loc.x + "," + r3Loc.y + ")");
+
 
         addPercept(pos1);
         addPercept(pos2);
+		addPercept(pos3);
 
         if (model.hasObject(GARB, r1Loc)) {
             addPercept(g1);
         }
         if (model.hasObject(GARB, r2Loc)) {
             addPercept(g2);
+        }
+		if (model.hasObject(GARB, r3Loc)) {
+            addPercept(g3);
         }
     }
 
@@ -114,6 +121,12 @@ public class MarsEnv extends Environment {
 				y = rand.nextInt(6);
 				Location r2Loc = new Location(x, y);
 				setAgPos(1, r2Loc);
+				
+				x = rand.nextInt(6);
+				y = rand.nextInt(6);
+				Location r3Loc = new Location(x, y);
+				setAgPos(2, r3Loc);
+				
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -161,6 +174,41 @@ public class MarsEnv extends Environment {
 			
             setAgPos(0, r1);
             setAgPos(1, getAgPos(1)); // just to draw it in the view
+			
+            Location r3 = getAgPos(2);
+			int o = rand.nextInt(3);
+			switch(o){
+				case 0: 
+					r3.x++;
+					if (r1.x == getWidth()) {
+						r1.x = 0;
+						r1.y++;
+					}
+					if (r1.x == getWidth()) {
+						//for continuosly searching
+						setAgPos(0, 0, 0);
+						return;
+					}
+				case 1:
+					r3.x++;
+					if (r1.x == getWidth()) {
+						r1.x = 0;
+						r1.y++;
+					}
+			}
+			r3.y++;
+            if (r1.y == getHeight()) {
+                r1.y = 0;
+                r1.x++;
+            }
+            // finished searching the whole grid
+            if (r1.x == getWidth()) {
+                //for continuosly searching
+				setAgPos(0, 0, 0);
+				return;
+            }
+			
+			
         }
 
         void moveTowards(int x, int y) throws Exception {
