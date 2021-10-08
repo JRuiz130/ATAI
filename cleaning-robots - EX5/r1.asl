@@ -21,7 +21,8 @@ at(P) :- pos(P,X,Y) & pos(r1,X,Y).
    <- !carry_to(r2).
 
 +!carry_to(R)
-   <- // remember where to go back
+   <- !ensure_carry_to(R); 
+   	// remember where to go back
       ?pos(r1,X,Y);
       -+pos(last,X,Y);
 
@@ -32,6 +33,11 @@ at(P) :- pos(P,X,Y) & pos(r1,X,Y).
       !at(last);
       !check(slots).
 
++!ensure_carry_to(R) : garbage(r1)
+   <- !take(garb, R);
+      !ensure_carry_to(R).
++!ensure_carry_to(_).
+	  
 +!take(S,L) : true
    <- !ensure_pick(S);
       !at(L);

@@ -21,6 +21,8 @@ public class MarsEnv extends Environment {
     public static final Term    bg = Literal.parseLiteral("burn(garb)");
     public static final Literal g1 = Literal.parseLiteral("garbage(r1)");
     public static final Literal g2 = Literal.parseLiteral("garbage(r2)");
+	public static final Literal g3 = Literal.parseLiteral("garbage(r3)");
+
 
     static Logger logger = Logger.getLogger(MarsEnv.class.getName());
 
@@ -104,13 +106,13 @@ public class MarsEnv extends Environment {
         Random random = new Random(System.currentTimeMillis());
 
         private MarsModel() {
-            super(GSize, GSize, 2);
+            super(GSize, GSize, 3);
             Random rand = new Random();
             // initial location of agents
             try {
                 //setAgPos(0, 0, 0); //default pos
 
-                int x, y;
+                int x, y, z, w;
 				x = rand.nextInt(6);
 				y = rand.nextInt(6);
 				Location r1Loc = new Location(x, y);
@@ -122,9 +124,10 @@ public class MarsEnv extends Environment {
 				Location r2Loc = new Location(x, y);
 				setAgPos(1, r2Loc);
 				
-				x = rand.nextInt(6);
-				y = rand.nextInt(6);
-				Location r3Loc = new Location(x, y);
+				//Location of r3
+				z = rand.nextInt(6);
+				w = rand.nextInt(6);
+				Location r3Loc = new Location(z, w);
 				setAgPos(2, r3Loc);
 				
             } catch (Exception e) {
@@ -149,17 +152,7 @@ public class MarsEnv extends Environment {
 
         void nextSlot() throws Exception {
             Location r1 = getAgPos(0);
-            /*
-			r1.x++;
-            if (r1.x == getWidth()) {
-                r1.x = 0;
-                r1.y++;
-            }
-            // finished searching the whole grid
-            if (r1.y == getHeight()) {
-                return;
-            }
-			*/
+            
 			r1.y++;
             if (r1.y == getHeight()) {
                 r1.y = 0;
@@ -175,40 +168,20 @@ public class MarsEnv extends Environment {
             setAgPos(0, r1);
             setAgPos(1, getAgPos(1)); // just to draw it in the view
 			
+			Random rand = new Random();
+
+			//R3 teleports randomly on the map
             Location r3 = getAgPos(2);
-			int o = rand.nextInt(3);
-			switch(o){
-				case 0: 
-					r3.x++;
-					if (r1.x == getWidth()) {
-						r1.x = 0;
-						r1.y++;
-					}
-					if (r1.x == getWidth()) {
-						//for continuosly searching
-						setAgPos(0, 0, 0);
-						return;
-					}
-				case 1:
-					r3.x++;
-					if (r1.x == getWidth()) {
-						r1.x = 0;
-						r1.y++;
-					}
+			int x = rand.nextInt(getWidth()-1);
+			int y = rand.nextInt(getHeight()-1);
+			setAgPos(2, x, y);
+			
+			//R3 putting garbage
+			int prob = rand.nextInt(4);
+			if(prob == 0){
+				System.out.println("R3: Putting garbage");
+				add(GARB, x, y);
 			}
-			r3.y++;
-            if (r1.y == getHeight()) {
-                r1.y = 0;
-                r1.x++;
-            }
-            // finished searching the whole grid
-            if (r1.x == getWidth()) {
-                //for continuosly searching
-				setAgPos(0, 0, 0);
-				return;
-            }
-			
-			
         }
 
         void moveTowards(int x, int y) throws Exception {
@@ -296,6 +269,9 @@ public class MarsEnv extends Environment {
                     c = Color.orange;
                 }
             }
+			if (id == 2){
+				c = Color.red;
+			}
             super.drawAgent(g, x, y, c, -1);
             if (id == 0) {
                 g.setColor(Color.black);

@@ -142,6 +142,7 @@ public class MarsEnv extends Environment {
             add(GARB, 0, GSize-2);
             add(GARB, GSize-1, GSize-1);
 			*/
+			//adding garbage
 			int x, y;
 			for(int i = 0; i <= 3; i++){
 				x = rand.nextInt(6);
@@ -166,7 +167,21 @@ public class MarsEnv extends Environment {
             }
 			
             setAgPos(0, r1);
-            setAgPos(1, getAgPos(1)); // just to draw it in the view
+			
+			//r2 moving
+			Location r2 = getAgPos(1);
+			r2.x++;
+            if (r2.x == getWidth()) {
+                r2.x = 0;
+                r2.y++;
+            }
+            // finished searching the whole grid
+            if (r2.y == getHeight()) {
+                //for continuosly searching
+				setAgPos(1, 0, 0);
+				return;
+            }
+            setAgPos(1, r2); // just to draw it in the view
 			
 			Random rand = new Random();
 
