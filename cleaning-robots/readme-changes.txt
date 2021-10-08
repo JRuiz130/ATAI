@@ -37,18 +37,52 @@ We also print a message to know when they are failing.
 					System.out.println("I failed burning the garbage!");
                     nerr++;
                 }
+In order to let the agent r2 try again after trying to burn the garbage ones and failing we also added new behaviour
+to the r2.asl file. By this we ensure that at one point the garbage really is burnt.
+    +!ensure_burn(S) : garbage(r2)
+       <- burn(garb);
+          !ensure_burn(S).
+    +!ensure_burn(_).
 
 
 Task 3)
 Modifying agent r1s path:
-a) scan top-down instead of left-right:
+a) scan top-down instead of left-right: for this we changed the method nextSlot(). The changes are just in the adjustment
+of the x and y coordinates so the robot moves one place down on each step (or to the next column on top of the grid).
 
-b) scanning continously:
+b) scanning continuously:
+in order to scan continuously we send the agent r1 to the top left corner of the grid and start there again.
+            Location r1 = getAgPos(0);
+
+			r1.y++;
+            if (r1.y == getHeight()) {
+                r1.y = 0;
+                r1.x++;
+            }
+            // finished searching the whole grid
+            if (r1.x == getWidth()) {
+                //for continuosly searching
+				setAgPos(0, 0, 0);
+				return;
+            }
+
+            setAgPos(0, r1);
+
 
 Task 4)
 Include a new agent r3 that moves and produces garbage randomly:
-
+We created a new agent r3 by adding it in the jedit environment. In the super() method of the MarsModel constructor
+we then changed the number of agents to 3 instead of 2.
+Also in the constructor we set the first position of r3 randomly on the grid. In the method nextSlot() we added code
+such that r3 is teleporting randomly around the grid. In the same method we also added logic so r3 places garbage.
+Therefore we generate random numbers and for one number we let r3 produce a piece of garbage on its current position.
+            //R3 putting garbage
+			int prob = rand.nextInt(4);
+			if(prob == 0){
+				System.out.println("R3: Putting garbage");
+				add(GARB, x, y);
+			}
 
 Task 5)
-For our task we change the behaviour of r2. It should now also move around, pick up garbage and burn it right away.
-R1 has to continue to bring the garbage to r2 in order for the garbage to get burnt.
+For our task we added a new agent r4 that is moving around and sometimes picks up garbage, moves it somewhere else and
+drops it again.
