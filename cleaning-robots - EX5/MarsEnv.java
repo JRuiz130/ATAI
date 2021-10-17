@@ -19,6 +19,7 @@ public class MarsEnv extends Environment {
     public static final Term    pg = Literal.parseLiteral("pick(garb)");
     public static final Term    dg = Literal.parseLiteral("drop(garb)");
     public static final Term    bg = Literal.parseLiteral("burn(garb)");
+	public static final Term    pga = Literal.parseLiteral("pickalt(garb)");
     public static final Literal g1 = Literal.parseLiteral("garbage(r1)");
     public static final Literal g2 = Literal.parseLiteral("garbage(r2)");
 	public static final Literal g3 = Literal.parseLiteral("garbage(r3)");
@@ -51,6 +52,8 @@ public class MarsEnv extends Environment {
                 model.moveTowards(x,y);
             } else if (action.equals(pg)) {
                 model.pickGarb();
+			} else if (action.equals(pga)) {
+				model.pickGarbAlt();
             } else if (action.equals(dg)) {
                 model.dropGarb();
             } else if (action.equals(bg)) {
@@ -206,17 +209,32 @@ public class MarsEnv extends Environment {
 			
 			//R4 moves like R1
             Location r4 = getAgPos(3);
-			r4.y++;
-            if (r4.y == getHeight()) {
-                r4.y = 0;
-                r4.x++;
+			r4.x++;
+            if (r4.x == getWidth()) {
+                r4.x = 0;
+                r4.y++;
             }
             // finished searching the whole grid
-            if (r4.x == getWidth()) {
+            if (r4.y == getHeight()) {
                 //for continuosly searching
 				setAgPos(3, 0, 0);
 				return;
             }
+			//Sometimes r4 can lose the garbage it's carrying
+			
+			if((r4HasGarb == true) && (rand.nextInt(4) == 0)){
+				if (r4.x == 0) {
+					if (r4.y == 0){
+						add(GARB, getWidth(), getHeight());
+					}
+					else {
+						add(GARB, r4.x, r4.y -1);
+					}
+				} else {
+					add(GARB, r4.x -1, r4.y);
+				}
+				System.out.println("R4 Lost the garbage!!!!");
+			}
             setAgPos(3, r4);			
         }
 
@@ -250,6 +268,15 @@ public class MarsEnv extends Environment {
                 }
             }
         }
+		void pickGarbAlt() {
+            // r4 location has garbage
+            if (model.hasObject(GARB, getAgPos(3))) {
+                remove(GARB, getAgPos(3));
+				r4HasGarb = true;
+				System.out.println("I, R4, succesfully picked up the garbage!");
+            }
+        }
+		
         void dropGarb() {
             if (r1HasGarb) {
                 r1HasGarb = false;

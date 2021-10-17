@@ -203,6 +203,21 @@ public class MarsEnv extends Environment {
 				System.out.println("R3: Putting garbage");
 				add(GARB, x, y);
 			}
+			
+			//R4 moves like R1
+            Location r4 = getAgPos(3);
+			r4.y++;
+            if (r4.y == getHeight()) {
+                r4.y = 0;
+                r4.x++;
+            }
+            // finished searching the whole grid
+            if (r4.x == getWidth()) {
+                //for continuosly searching
+				setAgPos(3, 0, 0);
+				return;
+            }
+            setAgPos(3, r4);			
         }
 
         void moveTowards(int x, int y) throws Exception {

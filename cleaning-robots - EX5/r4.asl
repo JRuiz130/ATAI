@@ -1,9 +1,27 @@
+// mars robot 4
 
-+garbage(r4) : true <- 
-					!ensure_burn(s).
-					burn(garb).
+/* Initial beliefs */
 
-+!ensure_burn(S) : garbage(r4)
-   <- burn(garb);
-      !ensure_burn(S).
-+!ensure_burn(_).
+at(P) :- pos(P,X,Y) & pos(r4,X,Y).
+
+/* Initial goal */
+
+!check(slots).
+
+/* Plans */
+
++!check(slots) : not garbage(r4)
+   <- 
+      !check(slots).
++!check(slots).
+
+
+@lg[atomic]
++garbage(r4) : not .desire(take(garb,R))
+   <- !take(garb,R).
+
++!take(S,L) : true
+   <- pickalt(garb).
+
+
+
