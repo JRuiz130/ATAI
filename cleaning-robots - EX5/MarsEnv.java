@@ -22,6 +22,8 @@ public class MarsEnv extends Environment {
     public static final Literal g1 = Literal.parseLiteral("garbage(r1)");
     public static final Literal g2 = Literal.parseLiteral("garbage(r2)");
 	public static final Literal g3 = Literal.parseLiteral("garbage(r3)");
+	public static final Literal g4 = Literal.parseLiteral("garbage(r4)");
+
 
 
     static Logger logger = Logger.getLogger(MarsEnv.class.getName());
@@ -76,15 +78,20 @@ public class MarsEnv extends Environment {
         Location r1Loc = model.getAgPos(0);
         Location r2Loc = model.getAgPos(1);
 		Location r3Loc = model.getAgPos(2);
+		Location r4Loc = model.getAgPos(3);
+		
 
         Literal pos1 = Literal.parseLiteral("pos(r1," + r1Loc.x + "," + r1Loc.y + ")");
         Literal pos2 = Literal.parseLiteral("pos(r2," + r2Loc.x + "," + r2Loc.y + ")");
         Literal pos3 = Literal.parseLiteral("pos(r3," + r3Loc.x + "," + r3Loc.y + ")");
+        Literal pos4 = Literal.parseLiteral("pos(r4," + r4Loc.x + "," + r4Loc.y + ")");
 
 
         addPercept(pos1);
         addPercept(pos2);
 		addPercept(pos3);
+		addPercept(pos4);
+
 
         if (model.hasObject(GARB, r1Loc)) {
             addPercept(g1);
@@ -95,6 +102,9 @@ public class MarsEnv extends Environment {
 		if (model.hasObject(GARB, r3Loc)) {
             addPercept(g3);
         }
+		if (model.hasObject(GARB, r4Loc)) {
+            addPercept(g4);
+        }
     }
 
     class MarsModel extends GridWorldModel {
@@ -102,16 +112,18 @@ public class MarsEnv extends Environment {
         public static final int MErr = 2; // max error in pick garb
         int nerr; // number of tries of pick garb
         boolean r1HasGarb = false; // whether r1 is carrying garbage or not
+		boolean r4HasGarb = false; // whether r4 is carrying garbage or not
+
 
         Random random = new Random(System.currentTimeMillis());
 
         private MarsModel() {
-            super(GSize, GSize, 3);
+            super(GSize, GSize, 4);
             Random rand = new Random();
             // initial location of agents
             try {
                 //setAgPos(0, 0, 0); //default pos
-
+				//Location of r1
                 int x, y, z, w;
 				x = rand.nextInt(6);
 				y = rand.nextInt(6);
@@ -129,6 +141,12 @@ public class MarsEnv extends Environment {
 				w = rand.nextInt(6);
 				Location r3Loc = new Location(z, w);
 				setAgPos(2, r3Loc);
+				
+				//Location of r4
+				x = rand.nextInt(6);
+				y = rand.nextInt(6);
+				Location r4Loc = new Location(x, y);
+				setAgPos(3, r4Loc);
 				
             } catch (Exception e) {
                 e.printStackTrace();
@@ -168,20 +186,8 @@ public class MarsEnv extends Environment {
 			
             setAgPos(0, r1);
 			
-			//r2 moving
-			Location r2 = getAgPos(1);
-			r2.x++;
-            if (r2.x == getWidth()) {
-                r2.x = 0;
-                r2.y++;
-            }
-            // finished searching the whole grid
-            if (r2.y == getHeight()) {
-                //for continuosly searching
-				setAgPos(1, 0, 0);
-				return;
-            }
-            setAgPos(1, r2); // just to draw it in the view
+					
+            setAgPos(1, getAgPos(1)); // just to draw it in the view
 			
 			Random rand = new Random();
 
@@ -197,6 +203,21 @@ public class MarsEnv extends Environment {
 				System.out.println("R3: Putting garbage");
 				add(GARB, x, y);
 			}
+			
+			//R4 moves like R1
+            Location r4 = getAgPos(3);
+			r4.y++;
+            if (r4.y == getHeight()) {
+                r4.y = 0;
+                r4.x++;
+            }
+            // finished searching the whole grid
+            if (r4.x == getWidth()) {
+                //for continuosly searching
+				setAgPos(3, 0, 0);
+				return;
+            }
+            setAgPos(3, r4);			
         }
 
         void moveTowards(int x, int y) throws Exception {
@@ -286,6 +307,9 @@ public class MarsEnv extends Environment {
             }
 			if (id == 2){
 				c = Color.red;
+			}
+			if (id == 3){
+				c = Color.green;
 			}
             super.drawAgent(g, x, y, c, -1);
             if (id == 0) {
