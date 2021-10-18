@@ -103,7 +103,7 @@ probability to not pick the garbage.
 
 void pickGarbAlt() {
     // r4 location has garbage
-    if (model.hasObject(GARB, getAgPos(3))) {
+    if (model.hasObject(GARB, getAgPos(3)) && (r4HasGarb == false)) {
           remove(GARB, getAgPos(3));
           r4HasGarb = true;
           System.out.println("I, R4, succesfully picked up the garbage!");
