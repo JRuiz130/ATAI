@@ -82,7 +82,7 @@ public class MarsEnv extends Environment {
         Location r2Loc = model.getAgPos(1);
 		Location r3Loc = model.getAgPos(2);
 		Location r4Loc = model.getAgPos(3);
-		
+
 
         Literal pos1 = Literal.parseLiteral("pos(r1," + r1Loc.x + "," + r1Loc.y + ")");
         Literal pos2 = Literal.parseLiteral("pos(r2," + r2Loc.x + "," + r2Loc.y + ")");
@@ -132,25 +132,25 @@ public class MarsEnv extends Environment {
 				y = rand.nextInt(6);
 				Location r1Loc = new Location(x, y);
 				setAgPos(0, r1Loc);
-				
+
                 //Location r2Loc = new Location(GSize/2, GSize/2); //Default pos
 				x = rand.nextInt(6);
 				y = rand.nextInt(6);
 				Location r2Loc = new Location(x, y);
 				setAgPos(1, r2Loc);
-				
+
 				//Location of r3
 				z = rand.nextInt(6);
 				w = rand.nextInt(6);
 				Location r3Loc = new Location(z, w);
 				setAgPos(2, r3Loc);
-				
+
 				//Location of r4
 				x = rand.nextInt(6);
 				y = rand.nextInt(6);
 				Location r4Loc = new Location(x, y);
 				setAgPos(3, r4Loc);
-				
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -174,7 +174,7 @@ public class MarsEnv extends Environment {
 
         void nextSlot() throws Exception {
             Location r1 = getAgPos(0);
-            
+
 			r1.y++;
             if (r1.y == getHeight()) {
                 r1.y = 0;
@@ -186,12 +186,12 @@ public class MarsEnv extends Environment {
 				setAgPos(0, 0, 0);
 				return;
             }
-			
+
             setAgPos(0, r1);
-			
-					
+
+
             setAgPos(1, getAgPos(1)); // just to draw it in the view
-			
+
 			Random rand = new Random();
 
 			//R3 teleports randomly on the map
@@ -199,14 +199,14 @@ public class MarsEnv extends Environment {
 			int x = rand.nextInt(getWidth()-1);
 			int y = rand.nextInt(getHeight()-1);
 			setAgPos(2, x, y);
-			
+
 			//R3 putting garbage
 			int prob = rand.nextInt(4);
 			if(prob == 0){
 				System.out.println("R3: Putting garbage");
 				add(GARB, x, y);
 			}
-			
+
 			//R4 moves like R1
             Location r4 = getAgPos(3);
 			r4.x++;
@@ -221,11 +221,11 @@ public class MarsEnv extends Environment {
 				return;
             }
 			//Sometimes r4 can lose the garbage it's carrying
-			
+
 			if((r4HasGarb == true) && (rand.nextInt(4) == 0)){
 				if (r4.x == 0) {
 					if (r4.y == 0){
-						add(GARB, getWidth(), getHeight());
+						add(GARB, getWidth()-1, getHeight()-1);
 					}
 					else {
 						add(GARB, r4.x, r4.y -1);
@@ -233,9 +233,10 @@ public class MarsEnv extends Environment {
 				} else {
 					add(GARB, r4.x -1, r4.y);
 				}
+				r4HasGarb = false;
 				System.out.println("R4 Lost the garbage!!!!");
 			}
-            setAgPos(3, r4);			
+            setAgPos(3, r4);
         }
 
         void moveTowards(int x, int y) throws Exception {
@@ -270,13 +271,13 @@ public class MarsEnv extends Environment {
         }
 		void pickGarbAlt() {
             // r4 location has garbage
-            if (model.hasObject(GARB, getAgPos(3))) {
+            if ((model.hasObject(GARB, getAgPos(3))) && (r4HasGarb == false)) {
                 remove(GARB, getAgPos(3));
 				r4HasGarb = true;
 				System.out.println("I, R4, succesfully picked up the garbage!");
             }
         }
-		
+
         void dropGarb() {
             if (r1HasGarb) {
                 r1HasGarb = false;
@@ -288,7 +289,7 @@ public class MarsEnv extends Environment {
             if (model.hasObject(GARB, getAgPos(1))) {
                 //remove(GARB, getAgPos(1));
 				System.out.println("Trying to burn the garbage");
-				
+
 				if (random.nextBoolean() || nerr == MErr) {
 					System.out.println("Succesfully burnt the garbage");
                     remove(GARB, getAgPos(1));
@@ -298,7 +299,7 @@ public class MarsEnv extends Environment {
                     nerr++;
                 }
             }
-			
+
         }
     }
 

@@ -86,3 +86,26 @@ Therefore we generate random numbers and for one number we let r3 produce a piec
 Task 5)
 For our task we added a new agent r4 that is moving around and sometimes picks up garbage, moves it somewhere else and
 drops it again.
+R4 is scanning the surface horizontally. When r4 finds garbage, if it has not already picked up garbage, it picks it up.
+Then it keeps moving in the same direction and for each square of the grid it has a 20% probability to drop it.
+When the agent drops the garbage, this drops one square behind r4, so we had to be careful with the agents position.
+In case the agent is not on the left wall of the grid, it drops normally, but when the agent is on the wall, the garbage drops
+one square up. In case the agent is in the (0, 0) position, it drops the garbage on the other corner of the grid.
+As we can see on the following code, r4 has the objective to pick the garbage up and to carry it.
++garbage(r4) : not .desire(take(garb,R))
+   <- !take(garb,R).
+
++!take(S,L) : true
+   <- pickalt(garb).
+
+We also created a new function pickGarbAlt which is very similar to pickGarb, but only affects r4 and it does not have any
+probability to not pick the garbage.
+
+void pickGarbAlt() {
+    // r4 location has garbage
+    if (model.hasObject(GARB, getAgPos(3))) {
+          remove(GARB, getAgPos(3));
+          r4HasGarb = true;
+          System.out.println("I, R4, succesfully picked up the garbage!");
+    }
+}
