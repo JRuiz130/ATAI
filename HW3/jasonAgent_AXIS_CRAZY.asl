@@ -102,7 +102,6 @@ patrollingRadius(64).
         };
 
         //se mueve 10 unidades
-        //.random([1,2,3,4], X); //unifies X with a random number between the numbers given
         X = math.random(4);
 
         if(agent_state(standing)){
@@ -127,8 +126,13 @@ patrollingRadius(64).
             +agent_state(standing);
           }
         }
-        //?state(s);
-        //+agent_state(s);
+        //The crazy agent tells its position to the others so they can follow him
+        .my_team("AXIS", E); //Get all the Axis members
+        //.println("Crazy team: ", E);
+        ?my_position(AX, AY, AZ); //Store the position here so it updates with each iteration
+        .concat("goto(", AX, ", ", AY, ", ", AZ, ")", Content1); //store the message content. Message is a goto to the crazy agent position
+        .send_msg_with_conversation_id(E, tell, Content1, "INT"); //Send the message
+        .println("Crazy agent: message sent: ", Content1);
 
         -look_response(_)[source(M)];
         -+fovObjects(FOVObjects);

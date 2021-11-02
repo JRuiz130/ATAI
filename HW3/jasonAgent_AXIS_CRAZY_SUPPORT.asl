@@ -111,6 +111,17 @@ patrollingRadius(64).
 /////////////////////////////////
 //  PERFORM ACTIONS
 /////////////////////////////////
+
+//When the Crazy supporter receives his teamates coordinates, it goes there
++goto(X,Y,Z)[source(T)]
+  <-
+  .println("Received the goto message from my Crazy Teammate. On my way", T);
+  !add_task(task("TASK_GOTO_POSITION", T, pos(X, Y, Z), ""));
+  -+state(standing);
+  -goto(_,_,_).
+  
+
+
 /**
  * Action to do when agent has an enemy at sight.
  *
@@ -188,7 +199,7 @@ patrollingRadius(64).
         +task_priority("TASK_GET_OBJECTIVE",1000);
         +task_priority("TASK_ATTACK", 1000);
         +task_priority("TASK_RUN_AWAY", 1500);
-        +task_priority("TASK_GOTO_POSITION", 750);
+        +task_priority("TASK_GOTO_POSITION", 3750);
         +task_priority("TASK_PATROLLING", 500);
         +task_priority("TASK_WALKING_PATH", 750).
 
