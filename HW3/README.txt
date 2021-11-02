@@ -84,3 +84,5 @@ The new agent receives this message and goes to the position:
   -+state(standing);
   -goto(_,_,_).
   
+4.Implement an ALLIED agent that locates the “crazy” agent and
+  kills him. The “crazy” agent can defend himself.
