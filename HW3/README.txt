@@ -60,3 +60,27 @@ if(agent_state(standing)){
     +agent_state(standing);
   }
 }
+
+3.-
+The new agent: jasonAgent_AXIS_CRAZY_SUPPORT follows the crazy agent of the previous exercises. To make this possible,
+the crazy agent sends its location with a goto command.
+The new agent receives this message and goes to the position:
+
+//code on jasonAgent_AXIS_CRAZY.
+//The crazy agent tells its position to the others so they can follow him
+.my_team("AXIS", E); //Get all the Axis members
+//.println("Crazy team: ", E);
+?my_position(AX, AY, AZ); //Store the position here so it updates with each iteration
+.concat("goto(", AX, ", ", AY, ", ", AZ, ")", Content1); //store the message content. Message is a goto to the crazy agent position
+.send_msg_with_conversation_id(E, tell, Content1, "INT"); //Send the message
+.println("Crazy agent: message sent: ", Content1);
+
+//code on jasonAgent_AXIS_CRAZY_SUPPORT:
+//When the Crazy supporter receives his teamates coordinates, it goes there
++goto(X,Y,Z)[source(T)]
+  <-
+  .println("Received the goto message from my Crazy Teammate. On my way", T);
+  !add_task(task("TASK_GOTO_POSITION", T, pos(X, Y, Z), ""));
+  -+state(standing);
+  -goto(_,_,_).
+  
