@@ -119,7 +119,7 @@ patrollingRadius(64).
   !add_task(task("TASK_GOTO_POSITION", T, pos(X, Y, Z), ""));
   -+state(standing);
   -goto(_,_,_).
-  
+
 
 
 /**

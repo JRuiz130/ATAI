@@ -94,38 +94,26 @@ patrollingRadius(64).
 /////////////////////////////////
 //  LOOK RESPONSE
 /////////////////////////////////
++goto(X,Y,Z)[source(_)]
+  <-
+  !add_task(task("TASK_GOTO_POSITION", T, pos(X, Y, Z), ""));
+  .println("Going to random position: ", X, ", ", Y, ", ", Z);
+  -+state(standing);
+  -goto(_,_,_).
+
+
 +look_response(FOVObjects)[source(M)]
     <-  //-waiting_look_response;
         .length(FOVObjects, Length);
         if (Length > 0) {
             ///?debug(Mode); if (Mode<=1) { .println("HAY ", Length, " OBJETOS A MI ALREDEDOR:\n", FOVObjects); }
         };
+        //Move randomly
+        X = math.random(255);
+        Z = math.random(255);
+        Y = 0; //does not affect. It's a 2D plane
+        +goto(X, Y, Z);
 
-        //se mueve 10 unidades
-        X = math.random(4);
-
-        if(agent_state(standing)){
-          if(0<= X & X < 1){
-            -agent_state(standing);
-            +order(down);
-            +agent_state(standing);
-          }
-          if(1<= X & X < 2){
-            -agent_state(standing);
-            +order(up);
-            +agent_state(standing);
-          }
-          if(2<= X & X < 3){
-            -agent_state(standing);
-            +order(left);
-            +agent_state(standing);
-          }
-          if(3<= X & X <= 4){
-            -agent_state(standing);
-            +order(right);
-            +agent_state(standing);
-          }
-        }
         //The crazy agent tells its position to the others so they can follow him
         .my_team("AXIS", E); //Get all the Axis members
         //.println("Crazy team: ", E);
@@ -133,6 +121,12 @@ patrollingRadius(64).
         .concat("goto(", AX, ", ", AY, ", ", AZ, ")", Content1); //store the message content. Message is a goto to the crazy agent position
         .send_msg_with_conversation_id(E, tell, Content1, "INT"); //Send the message
         .println("Crazy agent: message sent: ", Content1);
+
+        //The crazy agent tells its position to the others so they can follow him
+        .my_team("ALLIED", A); //Get all the Allied members
+        .send_msg_with_conversation_id(A, tell, Content1, "INT"); //Send the message
+        .println("Crazy agent: message sent to allies ", Content1);
+
 
         -look_response(_)[source(M)];
         -+fovObjects(FOVObjects);
@@ -213,17 +207,17 @@ patrollingRadius(64).
 /////////////////////////////////
 /**  You can change initial priorities if you want to change the behaviour of each agent  **/
 +!setup_priorities
-    <-  //+task_priority("TASK_NONE",0);
-        //+task_priority("TASK_GIVE_MEDICPAKS", 2000);
+    <-  +task_priority("TASK_NONE",0);
+        +task_priority("TASK_GIVE_MEDICPAKS", 2000);
         +task_priority("TASK_GIVE_AMMOPAKS", 0);
-        //+task_priority("TASK_GIVE_BACKUP", 0);
-        //+task_priority("TASK_GET_OBJECTIVE",1000);
-        //+task_priority("TASK_ATTACK", 1000);
-        //+task_priority("TASK_RUN_AWAY", 1500);
-        //+task_priority("TASK_GOTO_POSITION", 750);
-        //+task_priority("TASK_PATROLLING", 500);
-        //+task_priority("TASK_WALKING_PATH", 750).
-        .
+        +task_priority("TASK_GIVE_BACKUP", 0);
+        +task_priority("TASK_GET_OBJECTIVE",1000);
+        +task_priority("TASK_ATTACK", 1000);
+        +task_priority("TASK_RUN_AWAY", 1500);
+        +task_priority("TASK_GOTO_POSITION", 9750);
+        +task_priority("TASK_PATROLLING", 500);
+        +task_priority("TASK_WALKING_PATH", 750).
+
 
 
 
