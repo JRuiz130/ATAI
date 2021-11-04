@@ -108,5 +108,5 @@ to the base.
 
 5.-
 New task of our choice.
-We decided to make a turret-like defender for the axis team. Its function is to stay in its place and wait for the enemies.
+We decided to make a tower-like defender for the axis team. Its function is to stay in its place and wait for the enemies.
 As he finds his enemies, he focuses his aim on them and kills them.
