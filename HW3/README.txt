@@ -1,3 +1,4 @@
+By Lea Wölfl, Xabier Arriaga & Jon Ander Ruiz
 1.-
 The jasonAgent_ALLIED_RADIOMAN, from now on Radioman, it's in essence a copy of
 jasonAgent_ALLIED but with an added debug feature in its get agent to aim
@@ -83,6 +84,29 @@ The new agent receives this message and goes to the position:
   !add_task(task("TASK_GOTO_POSITION", T, pos(X, Y, Z), ""));
   -+state(standing);
   -goto(_,_,_).
-  
-4.Implement an ALLIED agent that locates the “crazy” agent and
-  kills him. The “crazy” agent can defend himself.
+
+4.-
+Implement an ALLIED agent that locates the “crazy” agent and kills him. The “crazy” agent can defend himself.
+For this, the crazy Axis soldier sends his position to the Allied team. The Allied Crazy Assassin listens this communication
+and then goes to find and kill him. As soon as he kills the crazy soldier, he changes its focus and goes to take the flag and return it
+to the base.
+
+//code on jasonAgent_AXIS_CRAZY
+//The crazy agent tells its position to the other team so they can end him
+.my_team("ALLIED", A); //Get all the Allied members
+.send_msg_with_conversation_id(A, tell, Content1, "INT"); //Send the message
+.println("Crazy agent: message sent to allies ", Content1);
+
+//code on jasonAgent_ALLIED_CRAZY_ASSASSIN
+//When the Crazy assasin receives crazy's coordinates, it goes there
++goto(X,Y,Z)[source(T)]
+  <-
+  .println("Received the goto message from my Crazy objetive. On my way", T);
+  !add_task(task("TASK_GOTO_POSITION", T, pos(X, Y, Z), ""));
+  -+state(standing);
+  -goto(_,_,_).
+
+5.-
+New task of our choice.
+We decided to make a turret-like defender for the axis team. Its function is to stay in its place and wait for the enemies.
+As he finds his enemies, he focuses his aim on them and kills them.
