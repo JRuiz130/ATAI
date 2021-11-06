@@ -9,7 +9,7 @@ team("AXIS").
 type("CLASS_SOLDIER").
 
 // Value of "closeness" to the Flag, when patrolling in defense
-patrollingRadius(64).
+patrollingRadius(0).
 
 
 
@@ -94,12 +94,27 @@ patrollingRadius(64).
 /////////////////////////////////
 //  LOOK RESPONSE
 /////////////////////////////////
++goto(X,Y,Z)[source(_)]
+  <-
+  !add_task(task("TASK_GOTO_POSITION", T, pos(X, Y, Z), ""));
+  .println("Going to position: ", X, ", ", Y, ", ", Z);
+  //move to the same position always
+  	?basePos(BX, BY ,BZ);
+  	+goto(BX+1, BY, BZ+1);
+  -+state(standing);
+  -goto(_,_,_).
+
+
+
 +look_response(FOVObjects)[source(M)]
     <-  //-waiting_look_response;
         .length(FOVObjects, Length);
         if (Length > 0) {
             ///?debug(Mode); if (Mode<=1) { .println("HAY ", Length, " OBJETOS A MI ALREDEDOR:\n", FOVObjects); }
         };
+		
+		
+		
         -look_response(_)[source(M)];
         -+fovObjects(FOVObjects);
         //.//;
@@ -156,16 +171,16 @@ patrollingRadius(64).
 /**  You can change initial priorities if you want to change the behaviour of each agent  **/
 +!setup_priorities
     <-  +task_priority("TASK_NONE",0);
-        //+task_priority("TASK_GIVE_MEDICPAKS", 2000);
-        //+task_priority("TASK_GIVE_AMMOPAKS", 0);
-        //+task_priority("TASK_GIVE_BACKUP", 0);
-        //+task_priority("TASK_GET_OBJECTIVE",1000);
-        +task_priority("TASK_ATTACK", 1000);
-		+task_priority("TASK_LOOK",900);
-        //+task_priority("TASK_RUN_AWAY", 1500);
-        //+task_priority("TASK_GOTO_POSITION", 1);
-        //+task_priority("TASK_PATROLLING", 500);
-        //+task_priority("TASK_WALKING_PATH", 750).
+        +task_priority("TASK_GIVE_MEDICPAKS", 0);
+        +task_priority("TASK_GIVE_AMMOPAKS", 0);
+        +task_priority("TASK_GIVE_BACKUP", 0);
+        +task_priority("TASK_GET_OBJECTIVE",1000);
+        +task_priority("TASK_ATTACK", 2000);
+		+task_priority("TASK_LOOK", 0);
+        +task_priority("TASK_RUN_AWAY", 0);
+        +task_priority("TASK_GOTO_POSITION", 0);
+        +task_priority("TASK_PATROLLING", 0);
+        +task_priority("TASK_WALKING_PATH", 0).
 
 
 
@@ -191,5 +206,6 @@ patrollingRadius(64).
 
 +!init
    <- ?debug(Mode); if (Mode<=1) { .println("YOUR CODE FOR init GOES HERE.")};
-    +agent_state(standing).
+    +agent_state(standing);
+	+basePos(X,Y,Z).
 
