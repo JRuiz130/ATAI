@@ -108,5 +108,6 @@ to the base.
 
 5.-
 New task of our choice.
-We decided to make a tower-like defender for the axis team. Its function is to stay in its place and wait for the enemies.
-As he finds his enemies, he focuses his aim on them and kills them.
+We created a new AXIS agent that calls for reinforcement. Whenever he is shot he checks if his health value dropped
+under 30. If it did he sends a message to his team members with his current position and the task to go to him to help.
+In order to achieve this we implemented the perform_injury_action plan.
