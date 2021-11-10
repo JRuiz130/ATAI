@@ -110,4 +110,28 @@ to the base.
 New task of our choice.
 We created a new AXIS agent that calls for reinforcement. Whenever he is shot he checks if his health value dropped
 under 30. If it did he sends a message to his team members with his current position and the task to go to him to help.
-In order to achieve this we implemented the perform_injury_action plan.
+In order to achieve this we implemented the perform_injury_action plan on jasonAgent_AXIS_REINFORCEMENT, and we created the got plan on jasonAgent_AXIS_REINFORCEMENT_SUPPORT.
+
+//Code on jasonAgent_AXIS_REINFORCEMENT
++!perform_injury_action
+    <-   //get the health status of the agent
+        ?my_health(H);
+
+        // the agent sends a message to get reinforcement if his health is below 30
+        if (H<30){
+            .my_team("AXIS", E); //Get all the Axis members
+            ?my_position(AX, AY, AZ); //Store the position of the agent here so it updates with each iteration
+            .concat("goto(", AX, ", ", AY, ", ", AZ, ")", Content1); //store the message content. Message is a goto to the agent that needs help
+            .send_msg_with_conversation_id(E, tell, Content1, "INT"); //Send the message
+            .println("REINFORCEMENT agent: message sent: ", Content1);
+                }
+        .
+
+//Code on jasonAgent_AXIS_REINFORCEMENT_SUPPORT
+//When the Reinforcement supporter receives his teamates coordinates, it goes there
++goto(X,Y,Z)[source(T)]
+  <-
+  .println("Received the goto message from my Reinforcement Teammate. On my way, ", T);
+  !add_task(task("TASK_GOTO_POSITION", T, pos(X, Y, Z), ""));
+  -+state(standing);
+  -goto(_,_,_).
