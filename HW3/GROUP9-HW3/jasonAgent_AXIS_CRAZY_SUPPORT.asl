@@ -101,9 +101,6 @@ patrollingRadius(64).
             ///?debug(Mode); if (Mode<=1) { .println("HAY ", Length, " OBJETOS A MI ALREDEDOR:\n", FOVObjects); }
         };
 
-        +goto(127, 0, 155);
-
-
 
         -look_response(_)[source(M)];
         -+fovObjects(FOVObjects);
@@ -115,13 +112,13 @@ patrollingRadius(64).
 //  PERFORM ACTIONS
 /////////////////////////////////
 
-+goto(X,Y,Z)[source(_)]
+//When the Crazy supporter receives his teamates coordinates, it goes there
++goto(X,Y,Z)[source(T)]
   <-
+  .println("Received the goto message from my Crazy Teammate. On my way", T);
   !add_task(task("TASK_GOTO_POSITION", T, pos(X, Y, Z), ""));
-  //.println("Going to mid: ", X, ", ", Y, ", ", Z);
   -+state(standing);
   -goto(_,_,_).
-
 
 
 
@@ -175,8 +172,7 @@ patrollingRadius(64).
  *
  */
 +!perform_no_ammo_action .
-    //<- ?debug(Mode); if (Mode<=1) { .println("YOUR CODE FOR PERFORM_LOOK_ACTION GOES HERE.") }.
-
+/// <- ?debug(Mode); if (Mode<=1) { .println("YOUR CODE FOR PERFORM_NO_AMMO_ACTION GOES HERE.") }.
 
 /**
  * Action to do when an agent is being shot.
@@ -187,36 +183,26 @@ patrollingRadius(64).
  * <em> It's very useful to overload this plan. </em>
  *
  */
-+!perform_injury_action
-    <-   //get the health status of the agent
-        ?my_health(H);
-
-        // the agent sends a message to get reinforcement if his health is below 30
-        if (H<30){
-            .my_team("AXIS", E); //Get all the Axis members
-            ?my_position(AX, AY, AZ); //Store the position of the agent here so it updates with each iteration
-            .concat("goto(", AX, ", ", AY, ", ", AZ, ")", Content1); //store the message content. Message is a goto to the agent that needs help
-            .send_msg_with_conversation_id(E, tell, Content1, "INT"); //Send the message
-            .println("REINFORCEMENT agent: message sent: ", Content1);
-                }
-        .
-
++!perform_injury_action .
+///<- ?debug(Mode); if (Mode<=1) { .println("YOUR CODE FOR PERFORM_INJURY_ACTION GOES HERE.") }.
 
 
 /////////////////////////////////
 //  SETUP PRIORITIES
 /////////////////////////////////
+/**  You can change initial priorities if you want to change the behaviour of each agent  **/
 +!setup_priorities
     <-  +task_priority("TASK_NONE",0);
-        +task_priority("TASK_GIVE_MEDICPAKS", 0);
+        +task_priority("TASK_GIVE_MEDICPAKS", 2000);
         +task_priority("TASK_GIVE_AMMOPAKS", 0);
         +task_priority("TASK_GIVE_BACKUP", 0);
         +task_priority("TASK_GET_OBJECTIVE",1000);
         +task_priority("TASK_ATTACK", 1000);
         +task_priority("TASK_RUN_AWAY", 1500);
-        +task_priority("TASK_GOTO_POSITION", 750);
+        +task_priority("TASK_GOTO_POSITION", 3750);
         +task_priority("TASK_PATROLLING", 500);
         +task_priority("TASK_WALKING_PATH", 750).
+
 
 
 
@@ -342,6 +328,4 @@ patrollingRadius(64).
 /////////////////////////////////
 
 +!init
-   <- ?debug(Mode); if (Mode<=1) { .println("YOUR CODE FOR init GOES HERE.")};
-   ?my_position(X, Y, Z);
-   +agent_state(standing).
+   <- ?debug(Mode); if (Mode<=1) { .println("YOUR CODE FOR init GOES HERE.")}.
